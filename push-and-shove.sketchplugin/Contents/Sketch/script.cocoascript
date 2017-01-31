@@ -245,7 +245,11 @@ var pasteAndReplace = function(context) {
 		doc.currentHandler().pasteOverSelection(selection);
 		pastedLayer = doc.selectedLayers();
 
-		doc.setSelectedLayers([ selection ]);
+		if(context.api().version >= 42) {
+			doc.setSelectedLayers(MSLayerArray.arrayWithLayer(selection));
+		} else {
+			doc.setSelectedLayers([ selection ]);
+		}
 		doc.currentHandler().delete(selection);
 
 		doc.setSelectedLayers(pastedLayer);
@@ -274,8 +278,16 @@ var deleteAndKeepSelection = function(context) {
 	doc.currentHandler().delete(selection);
 
 	if (sibling) {
-		doc.setSelectedLayers([ sibling ]);
+		if (context.api().version >= 42) {
+			doc.setSelectedLayers(MSLayerArray.arrayWithLayer(sibling));
+		} else {
+			doc.setSelectedLayers([ sibling ]);
+		}
 	} else {
-		doc.setSelectedLayers([ selectionParent ]);
+		if (context.api().version >= 42) {
+			doc.setSelectedLayers(MSLayerArray.arrayWithLayer(selectionParent));
+		} else {
+			doc.setSelectedLayers([ selectionParent ]);
+		}
 	}
 };
